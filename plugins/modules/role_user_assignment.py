@@ -186,25 +186,9 @@ def main():
     if user_ansible_id is not None:
         kwargs['user_ansible_id'] = user_ansible_id
 
-    role_map = {
-        'Team': 'teams',
-        'Organization': 'organizations',
-    }
-
-    entity_type = next((
-        mapped
-        for prefix, mapped in role_map.items()
-        if role_definition_str.startswith(prefix)
-    ), None)
-    object_param = object_ids or object_id
-
-    role_args = {
-        'role_definition_str': role_definition_str,
-        'user_param': user_param,
-        'user_ansible_id': user_ansible_id,
-        'state': state,
-        'kwargs': kwargs,
-    }
+    entity_type = role_definition.get('content_type')
+    object_param = assignment_objects
+    results = []
 
     if role_definition_str.lower().startswith('platform') and role_definition["id"] == 1:
         role_user_assignment = module.get_one('role_user_assignments', **{'data': kwargs})
